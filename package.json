@@ -1,0 +1,26 @@
+{
+  "name": "book-list",
+  "version": "1.0.0",
+  "description": "Allows a user to query the Google Books API, and return a set of results.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/robertjnielsen/book-list.git"
+  },
+  "author": "",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/robertjnielsen/book-list/issues"
+  },
+  "homepage": "https://github.com/robertjnielsen/book-list#readme",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "ejs": "^3.0.1",
+    "express": "^4.17.1",
+    "superagent": "^5.2.1"
+  }
+}
