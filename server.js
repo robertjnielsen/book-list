@@ -25,16 +25,11 @@ const Book = function(data) {
     return {
       title: book.title || 'Title Unavailable',
       author: book.authors ? book.authors.join(', ') : 'No Author',
-      description: book.description
-        ? book.description.slice(0, 300) + '...'
-        : 'Really great read...',
-      image:
-        book.imageLinks && book.imageLinks.thumbnail
-          ? book.imageLinks.thumbnail
-          : 'https://i.imgur.com/J5LVHEL.jpg'
-    };
+      description: book.description ? book.description.slice(0, 300) + '...' : 'Really great read...',
+      image: (book.imageLinks && book.imageLinks.thumbnail) ? book.imageLinks.thumbnail : 'https://i.imgur.com/J5LVHEL.jpg'
+    }
   });
-};
+}
 
 //ROUTES________________________
 app.get('/', (req, res) => {
@@ -46,26 +41,21 @@ app.get('/search/new', (req, res) => {
 });
 
 app.post('/search/new', (req, res) => {
-  console.log(req.body);
-  let APIUrl = 'https://www.googleapis.com/books/v1/volumes?q=';
-  APIUrl += req.body.searchQuery;
-  console.log(APIUrl);
+  let query = req.body.type === 'author' ? 'inauthor:' : 'intitle:';
+  let APIUrl = 'https://www.googleapis.com/books/v1/volumes?q=' + query + req.body.searchQuery;
 
   superagent
     .get(APIUrl)
     .then(results => {
       let titles = results.body.items.map(item => item.volumeInfo);
-
-      console.dir(titles); //raw info log
       const responseObj = new Book(titles);
-      console.log(responseObj.books); //constructed data for front end
-      res.render('pages/searches/show', { books: responseObj.books });
+      console.log(responseObj.books);
+      res.status(300).render('pages/index', { books: responseObj.books });
     })
-
     .catch(error => {
-      console.log('error with superagent GET', error);
-    });
-});
+      res.render('error', { error: error });
+    })
+})
 
 app.get('*', (req, res) => {
   res.status(404).send('Sorry, the page you requested does not exist! :(');
