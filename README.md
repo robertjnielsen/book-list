@@ -25,8 +25,8 @@ App now outputs data based on user search, utilizing the wonderful Google Books 
 More stylization.
 
 
-### Next thing.
-You get the pattern at this point.. 
+### Further Stylization.
+Usability improvements to UI. Add header / footer partials using EJS.
 
 
 ## Credits & Collaborations
@@ -78,4 +78,17 @@ Start time: __1230__
 Finish time: _____
 
 Actual time needed to complete: _____
+
+
+
+
+Number and name of feature: __Add partials__
+
+Estimate of time needed to complete: __40 min___
+
+Start time: __1300__
+
+Finish time: _1340____
+
+Actual time needed to complete: _1340.____
 
