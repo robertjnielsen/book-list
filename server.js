@@ -29,7 +29,7 @@ app.get('/search/new', (req, res) => {
 app.post('/search/new' , (req, res) => {
   console.log(req.body);
   let APIUrl = 'https://www.googleapis.com/books/v1/volumes?q=';
-  APIUrl += req.body.searchTerm;
+  APIUrl += req.body.searchQuery;
   console.log(APIUrl);
 
   superagent.get(APIUrl)
