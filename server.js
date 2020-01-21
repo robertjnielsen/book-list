@@ -50,7 +50,7 @@ app.post('/search/new', (req, res) => {
       let titles = results.body.items.map(item => item.volumeInfo);
       const responseObj = new Book(titles);
       console.log(responseObj.books);
-      res.status(300).render('pages/index', { books: responseObj.books });
+      res.status(300).render('pages/searches/show', { books: responseObj.books });
     })
     .catch(error => {
       res.render('error', { error: error });
