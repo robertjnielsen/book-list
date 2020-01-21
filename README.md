@@ -2,7 +2,7 @@
 
 #### Code Fellows 301: Lab 11
 
-**Version**: 1.0.0  
+**Version**: 0.1  
 **Author(s)**:  
 [Robert James Nielsen](https://github.com/robertjnielsen)  
 [Tyler Sayvetz](https://github.com/tylersayvetz)
