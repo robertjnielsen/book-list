@@ -1,0 +1,36 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  text-align: center;
+  background-color: rgb(80, 80, 80);
+}
+
+form {
+  width: 100%;
+  margin-top: 4rem;
+}
+
+.searchBox {
+  width: 100%;
+  padding: 1rem;
+  font-size: 1.2rem;
+}
+
+.radio {
+  display: block;
+  width: 80%;
+  margin: 1rem auto;
+  padding: 0.85rem;
+  font-size: 1.4rem;
+  background-color: rgb(200, 200, 200);
+}
+
+button {
+  width: 80%;
+  padding: 0.75rem;
+  font-size: 1rem;
+}
