@@ -12,15 +12,17 @@
     <a href="/about">About us!</a>
     <a href="/home">works</a>
 
+    <% if (locals.books)  { %>
     <div id="bookResults">
       <% books.forEach(book => { %>
       <div>
-        <img src="<% book.image %>" alt="<% book.title %>" />
-        <h2><% book.title %></h2>
-        <p><% book.author %></p>
-        <p><% book.description %></p>
+        <img src="<%= book.image %>" alt="<%= book.title %>" />
+        <h2><%= book.title %></h2>
+        <p><%= book.author %></p>
+        <p><%= book.description %></p>
       </div>
-      <% }) %>
+      <% }) }%>
+
     </div>
   </body>
 </html>
