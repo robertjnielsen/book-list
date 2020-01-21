@@ -18,17 +18,15 @@ app.use(express.urlencoded({extended: true}));
 app.use(express.static('./public'));
 
 
-
-
 app.get('/', (req, res) => {
   res.render('pages/index')
 })
 
-app.get('/searches/new', (req, res) => {
-  res.render('home');
+app.get('/search/new', (req, res) => {
+  res.render('pages/search');
 })
 
-app.post('/searches/new' , (req, res) => {
+app.post('/search/new' , (req, res) => {
   console.log(req.body);
   let APIUrl = 'https://www.googleapis.com/books/v1/volumes?q=';
   APIUrl += req.body.searchTerm;
@@ -42,4 +40,8 @@ app.post('/searches/new' , (req, res) => {
 
     .catch()
 
+})
+
+app.get('*', (req, res) => {
+  res.status(404).send('Sorry, the page you requested does not exist! :(');
 })
