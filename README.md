@@ -16,7 +16,7 @@ Book List is a web app that allows a user to search for any book(s) by title or 
 ## Architecture
 
 ## Change Log
-###Add basic proof-of-life fucntionality
+### Add basic proof-of-life fucntionality
 Add some beginning pages in views and get the rendering engine working. Name pages and directories according to assignment. Decide on mode of development. Add * route to catch invalid requests.
 
 
