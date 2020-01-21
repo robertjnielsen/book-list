@@ -41,8 +41,8 @@ app.get('/search/new', (req, res) => {
 });
 
 app.post('/search/new', (req, res) => {
-  let query = req.body.type === 'author' ? 'inauthor:' : 'intitle:';
-  let APIUrl = 'https://www.googleapis.com/books/v1/volumes?q=' + query + req.body.searchQuery;
+  let searchType = req.body.type === 'author' ? 'inauthor:' : 'intitle:';
+  let APIUrl = 'https://www.googleapis.com/books/v1/volumes?q=' + searchType + req.body.searchQuery;
 
   superagent
     .get(APIUrl)
@@ -50,7 +50,7 @@ app.post('/search/new', (req, res) => {
       let titles = results.body.items.map(item => item.volumeInfo);
       const responseObj = new Book(titles);
       console.log(responseObj.books);
-      res.status(300).render('pages/index', { books: responseObj.books });
+      res.status(300).render('pages/searches/show', { books: responseObj.books });
     })
     .catch(error => {
       res.render('error', { error: error });
