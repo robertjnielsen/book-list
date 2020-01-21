@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" href="/styles/reset.css" />
+    <link rel="stylesheet" href="/styles/base.css" />
+    <title>Results | Book-List</title>
+  </head>
+  <body>
+    <%- include('../../partials/header') %> <% if (locals.books) { %>
+    <div>
+      <% books.forEach(book => { %>
+      <div id="bookResults">
+        <img src="<%= book.image %>" alt="<%= book.title %>" />
+        <h2><%= book.title %></h2>
+        <p class="author"><%= book.author %></p>
+        <p><%= book.description %></p>
+      </div>
+      <% }) %>
+    </div>
+    <% } %>
+  </body>
+</html>

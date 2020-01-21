@@ -8,17 +8,19 @@ require('ejs');
 const app = express();
 const PORT = process.env.PORT || 8081;
 
-app.listen(PORT, () => { console.log(`Im listening to you... on port ${PORT}`) })
+app.listen(PORT, () => {
+  console.log(`Im listening to you... on port ${PORT}`);
+});
 
 //set app to use ejs view engine (needs /views dir to be made)
-app.set('view engine', 'ejs')
+app.set('view engine', 'ejs');
 
 //import body parser
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('./public'));
 
 //FUNCTIONS______________________
-const Book = function (data) {
+const Book = function(data) {
   this.books = data.map(book => {
     return {
       title: book.title || 'Title Unavailable',
@@ -31,18 +33,19 @@ const Book = function (data) {
 
 //ROUTES________________________
 app.get('/', (req, res) => {
-  res.render('pages/index')
-})
+  res.render('pages/index');
+});
 
 app.get('/search/new', (req, res) => {
   res.render('pages/search');
-})
+});
 
 app.post('/search/new', (req, res) => {
   let query = req.body.type === 'author' ? 'inauthor:' : 'intitle:';
   let APIUrl = 'https://www.googleapis.com/books/v1/volumes?q=' + query + req.body.searchQuery;
 
-  superagent.get(APIUrl)
+  superagent
+    .get(APIUrl)
     .then(results => {
       let titles = results.body.items.map(item => item.volumeInfo);
       const responseObj = new Book(titles);
@@ -56,4 +59,4 @@ app.post('/search/new', (req, res) => {
 
 app.get('*', (req, res) => {
   res.status(404).send('Sorry, the page you requested does not exist! :(');
-})
+});
