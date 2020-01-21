@@ -39,7 +39,8 @@ app.get('/search/new', (req, res) => {
 })
 
 app.post('/search/new', (req, res) => {
-  let APIUrl = 'https://www.googleapis.com/books/v1/volumes?q=' + req.body.searchQuery;
+  let query = req.body.type === 'author' ? 'inauthor:' : 'intitle:';
+  let APIUrl = 'https://www.googleapis.com/books/v1/volumes?q=' + query + req.body.searchQuery;
 
   superagent.get(APIUrl)
     .then(results => {
