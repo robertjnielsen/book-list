@@ -9,13 +9,49 @@ body {
   background-color: rgb(80, 80, 80);
 }
 
+.header {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 1rem;
+  color: rgb(255, 255, 255);
+  background-color: rgb(0, 0, 0);
+}
+
+.header a {
+  margin: auto 1rem;
+  text-decoration: none;
+  color: rgb(240, 240, 240);
+}
+
+.indexText {
+  font-size: 1.2rem;
+  margin: 1rem;
+}
+
+.indexText p {
+  margin: 2rem;
+}
+
+.indexText a {
+  text-decoration: none;
+  color: rgb(240, 240, 240);
+}
+
 form {
   width: 100%;
   margin-top: 4rem;
 }
 
+.searchInfo {
+  display: block;
+  font-size: 1.5rem;
+  margin: 1rem auto;
+  padding: 1rem 0;
+}
+
 .searchBox {
-  width: 100%;
+  width: 80%;
   padding: 1rem;
   font-size: 1.2rem;
 }
@@ -33,4 +69,30 @@ button {
   width: 80%;
   padding: 0.75rem;
   font-size: 1rem;
+  color: rgb(240, 240, 240);
+  background-color: rgb(0, 0, 0);
+}
+
+#bookResults {
+  width: 80%;
+  margin: 1rem auto;
+  padding: 1rem;
+  background-color: rgb(200, 200, 200);
+  box-shadow: 0.5rem 0.5rem 0.5rem rgb(0, 0, 0);
+}
+
+#bookResults img {
+  width: 128px;
+  height: 182px;
+}
+
+#bookResults h2 {
+  margin: 0.5rem auto;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.author {
+  margin: 0.5rem auto;
+  font-style: italic;
 }
