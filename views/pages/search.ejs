@@ -9,9 +9,12 @@
     <title>Search | Book-List</title>
   </head>
   <body>
+    <%- include('../partials/header') %>
     <form action="/search/new" method="POST">
-      <label class="searchBox">
+      <label>
+        <span class="searchInfo">Search By Title Or Author</span>
         <input
+          class="searchBox"
           type="text"
           name="searchQuery"
           placeholder="Search By Title Or Author"

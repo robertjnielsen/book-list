@@ -4,25 +4,16 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" href="/styles/reset.css" />
+    <link rel="stylesheet" href="/styles/base.css" />
     <title>Document</title>
   </head>
 
   <body>
-    <a href="/contact">Contact us!</a>
-    <a href="/about">About us!</a>
-    <a href="/home">works</a>
-
-    <% if (locals.books)  { %>
-    <div id="bookResults">
-      <% books.forEach(book => { %>
-      <div>
-        <img src="<%= book.image %>" alt="<%= book.title %>" />
-        <h2><%= book.title %></h2>
-        <p><%= book.author %></p>
-        <p><%= book.description %></p>
-      </div>
-      <% }) }%>
-
+    <%- include('../partials/header') %>
+    <div class="indexText">
+      <h2>Search For Books!</h2>
+      <p>Click the <a href="/search/new">Search</a> button!</p>
     </div>
   </body>
 </html>
