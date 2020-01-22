@@ -3,14 +3,26 @@
 require('dotenv').config();
 const express = require('express');
 const superagent = require('superagent');
+const pg = require('pg');
 require('ejs');
+
+
+//configure db
+const client = new pg.Client(process.env.DATABASE_URL);
+client.on('error', (err) => { console.error(err) });
+
+
 
 const app = express();
 const PORT = process.env.PORT || 8081;
 
-app.listen(PORT, () => {
-  console.log(`Im listening to you... on port ${PORT}`);
-});
+client.connect()
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(`Im listening to you... on port ${PORT}`);
+    })
+  })
+  .catch(err => { console.log(err) });
 
 //set app to use ejs view engine (needs /views dir to be made)
 app.set('view engine', 'ejs');
@@ -20,20 +32,36 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static('./public'));
 
 //FUNCTIONS______________________
-const Book = function(data) {
+const Book = function (data) {
   this.books = data.map(book => {
     return {
       title: book.title || 'Title Unavailable',
       author: book.authors ? book.authors.join(', ') : 'No Author',
-      description: book.description ? book.description.slice(0, 300) + '...' : 'Really great read...',
+      description: book.description ? book.description.slice(0, 252) + '...' : 'Really great read...',
       image: (book.imageLinks && book.imageLinks.thumbnail) ? book.imageLinks.thumbnail.replace('http:', 'https:') : 'https://i.imgur.com/J5LVHEL.jpg'
     }
   });
 }
 
+const queryShelf = () => {
+  return new Promise((resolve, reject) => {
+    let SQL = 'SELECT * FROM books;';
+    client.query(SQL)
+      .then((results) => {
+        resolve(results.rows);
+      })
+      .catch(err => console.log(err))
+  })
+}
+
 //ROUTES________________________
 app.get('/', (req, res) => {
-  res.render('pages/index');
+  queryShelf()
+    .then((results) => {
+      res.render('pages/index', {shelf: results, count: results.length});
+      //retreive array of books form DB and render index. 
+    })
+    .catch(err => console.error(err, 'DB query busted..'))
 });
 
 app.get('/search/new', (req, res) => {
@@ -57,6 +85,15 @@ app.post('/search/new', (req, res) => {
     })
 })
 
+
+app.get('/add', (req, res) => {
+  //this route will take you to the form page.
+})
+
+app.post('/add', (req, res) => {
+  //this route will add the book to the db and send the user to the index..
+})
+
 app.get('*', (req, res) => {
   res.status(404).send('Sorry, the page you requested does not exist! :(');
-});
+})

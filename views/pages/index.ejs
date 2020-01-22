@@ -10,10 +10,22 @@
   </head>
 
   <body>
+
     <%- include('../partials/header') %>
-    <div class="indexText">
-      <h2>Search For Books!</h2>
-      <p>Click the <a href="/search/new">Search</a> button!</p>
+    <div class="numberOfBooks">
+      <p>
+        <%= count %> Saved books!
+      </p>
+    </div>
+    <div class="booksInDB">
+      <% shelf.forEach(book => { %>
+        <div class="shelvedBook">
+          <img src="<%= book.image %>" alt="<%= book.title %>" />
+        <h2><%= book.title %></h2>
+        <p class="author"><%= book.author %></p>
+        <button>click me</button>
+        </div>
+      <% }) %>
     </div>
   </body>
 </html>
