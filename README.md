@@ -28,6 +28,8 @@ More stylization.
 ### Further Stylization.
 Usability improvements to UI. Add header / footer partials using EJS.
 
+### Add your personal bookshelf!
+Built out simple one-table DB to store books. Retreives proof of life book from DB.
 
 ## Credits & Collaborations
 
@@ -92,3 +94,44 @@ Finish time: _1340____
 
 Actual time needed to complete: _1340.____
 
+
+
+
+_____________________lab 12_______________________________
+
+### Retrieve books from dB
+
+Number and name of feature: __get DB functioning with SELECt only.__
+
+Estimate of time needed to complete: __40 min___
+
+Start time: __1200__
+
+Finish time: _1230___
+
+Actual time needed to complete: _30min.____
+
+
+### Add new books to application, save in DB
+
+Number and name of feature: __create button for adding to DB on search results page. __
+
+Estimate of time needed to complete: __5 min___
+
+Start time: __1230__
+
+Finish time: _1240__
+
+Actual time needed to complete: .____
+
+#########
+
+Number and name of feature: __insert that book into the DB.__
+
+Estimate of time needed to complete: __40 min___
+
+Start time: __1240__
+
+Finish time: _1320___
+
+Actual time needed to complete: _____
