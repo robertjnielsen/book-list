@@ -25,7 +25,7 @@ const Book = function(data) {
     return {
       title: book.title || 'Title Unavailable',
       author: book.authors ? book.authors.join(', ') : 'No Author',
-      description: book.description ? book.description.slice(0, 300) + '...' : 'Really great read...',
+      description: book.description ? book.description.slice(0, 252) + '...' : 'Really great read...',
       image: (book.imageLinks && book.imageLinks.thumbnail) ? book.imageLinks.thumbnail.replace('http:', 'https:') : 'https://i.imgur.com/J5LVHEL.jpg'
     }
   });
