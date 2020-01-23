@@ -48,7 +48,7 @@ const Book = function (data) {
 }
 
 const queryDelete = (param, value) => {
-  let SQL = `DELETE * FROM books WHERE ${param} = $1;`;
+  let SQL = `DELETE FROM books WHERE ${param} = $1;`;
   let values = [value];
   return client.query(SQL, values)
     .then(results => {
@@ -156,7 +156,7 @@ app.get('/detail/:bookid', (req, res) => {
 
 //fires when user presses delete button
 
-app.post('/detail/:bookid', (req, res) => {
+app.delete('/detail/:bookid', (req, res) => {
   queryDelete('id', req.params.bookid) 
     .then(results => {
       console.log(results)
