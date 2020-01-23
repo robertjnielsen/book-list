@@ -20,10 +20,15 @@
     <div class="booksInDB">
       <% shelf.forEach(book => { %>
         <div class="shelvedBook">
-          <img src="<%= book.image %>" alt="<%= book.title %>" />
+          <img src="<%= book.image_url %>" alt="<%= book.title %>" />
         <h2><%= book.title %></h2>
         <p class="author"><%= book.author %></p>
-        <button>click me</button>
+        <form action="/detail/<%=book.id%>" method="GET">
+          <button>Details</button>
+        </form>
+        <form action="/detail/<%=book.id%>_method=DELETE" method="POST">
+          <button>Remove from Library</button>
+        </form>
         </div>
       <% }) %>
     </div>

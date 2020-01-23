@@ -15,7 +15,7 @@
   <div>
     <% books.forEach(book => { %>
     <div id="bookResults">
-      <img src="<%= book.image %>" alt="<%= book.title %>" />
+      <img src="<%= book.image_url %>" alt="<%= book.title %>" />
       <h2><%= book.title %></h2>
       <p class="author"><%= book.author %></p>
       <p><%= book.description %></p>
@@ -23,7 +23,9 @@
         <input class="hidden" name="title" value="<%= book.title %>" style="display: none;">
         <input class="hidden" name="author" value="<%= book.author %>" style="display: none;">
         <input class="hidden" name="description" value="<%= book.description %>" style="display: none;">
-        <input class="hidden" name="image" value="<%= book.image %>" style="display: none;">
+        <input class="hidden" name="image_url" value="<%= book.image_url %>" style="display: none;">
+        <input class="hidden" name="isbn" value="<%= book.isbn %>" style="display: none;">
+        <input class="hidden" name="fulldescription" value="<%= book.fulldescription %>" style="display: none;">
         <button>Select</button>
       </form>
     </div>
