@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,6 +9,7 @@
   <link rel="stylesheet" href="/styles/reset.css" />
   <link rel="stylesheet" href="/styles/base.css" />
 </head>
+
 <body>
   <%- include('../partials/header') %>
 
@@ -16,14 +18,22 @@
     <h1>
       <%=book.title%>
     </h1>
-    <p class="authorInfo" ><%=book.author%></p>
-    <p class="detailDescription" ><%=book.fulldescription%></p>
+    <p class="authorInfo"><%=book.author%></p>
+    <p class="detailDescription"><%=book.fulldescription%></p>
     <p><%=book.isbn%></p>
     <p>On bookshelf: <%=book.bookshelf %> </p>
-    <form action="/update" method="GET">
+    <form action="/update/<%=book.id%>" method="POST">
+      <input class="hidden" name="title" value="<%= book.title %>" style="display: none;">
+      <input class="hidden" name="author" value="<%= book.author %>" style="display: none;">
+      <input class="hidden" name="description" value="<%= book.description %>" style="display: none;">
+      <input class="hidden" name="image_url" value="<%= book.image_url %>" style="display: none;">
+      <input class="hidden" name="isbn" value="<%= book.isbn %>" style="display: none;">
+      <input class="hidden" name="fulldescription" value="<%= book.fulldescription %>" style="display: none;">
+      <input class="hidden" name="id" value="<%= book.id %>" style="display: none;">
       <button>Update Book Data</button>
     </form>
 
   </div>
 </body>
+
 </html>

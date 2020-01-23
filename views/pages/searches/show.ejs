@@ -19,7 +19,7 @@
       <h2><%= book.title %></h2>
       <p class="author"><%= book.author %></p>
       <p><%= book.description %></p>
-      <form action="/add" method="GET">
+      <form action="/form" method="POST">
         <input class="hidden" name="title" value="<%= book.title %>" style="display: none;">
         <input class="hidden" name="author" value="<%= book.author %>" style="display: none;">
         <input class="hidden" name="description" value="<%= book.description %>" style="display: none;">

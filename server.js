@@ -34,6 +34,11 @@ app.use(methodOverride('_method'));
 
 
 
+
+
+
+
+
 //FUNCTIONS______________________
 const Book = function (data) {
   this.books = data.map(book => {
@@ -100,6 +105,15 @@ const insertBook = (book) => {
       return results.rows[0];
     })
 }
+
+
+
+
+
+
+
+
+
 //GLOBALS _________________________________________________
 
 
@@ -135,17 +149,28 @@ const newSearch = (req, res) => {
 
 
 const submitForm = (req, res) => {
-  queryShelfOne('isbn', req.body.isbn)
-    .then(results => {
-      if (results.length === 0) {
-        return insertBook(req.body)
-      }
-    })
-    .then(results => {
-      console.log(results);
-      res.redirect('/');
-    })
-    .catch(err => console.log(err, 'insert book errror'))
+  if (req.query.task === 'update') {
+    queryUpdate(req.body.id, req.body)
+      .then(results => {
+        res.redirect('/');
+      })
+      .catch(err => {
+        console.log('failed the update', err);
+      })
+
+  } else {
+    queryShelfOne('isbn', req.body.isbn)
+      .then(results => {
+        if (results.length === 0) {
+          return insertBook(req.body)
+        }
+      })
+      .then(results => {
+        console.log(results);
+        res.redirect('/');
+      })
+      .catch(err => console.log(err, 'insert book errror'))
+  }
 }
 
 const renderDetails = (req, res) => {
@@ -177,6 +202,9 @@ const updateBook = (req, res) => {
 
 
 
+
+
+
 //ROUTES________________________
 app.get('/', renderIndex);
 
@@ -188,9 +216,13 @@ app.post('/search/new', newSearch);
 
 
 //fires when user clicks 'add' from results page.
-app.get('/add', (req, res) => {
-  const responseBook = req.query;
-  res.render('pages/new-entry-form', { book: responseBook });
+app.post('/form', (req, res) => {
+  const responseBook = req.body;
+  let query = ''
+  if (req.query.task === 'update') {
+    query = '?task=update';
+  }
+  res.render('pages/new-entry-form', { book: responseBook, update: query });
 })
 
 //fires when add form is submitted
@@ -207,8 +239,8 @@ app.delete('/detail/:bookid', deleteBook);
 
 app.put('/detail/:bookid', updateBook);
 
-app.get('/update', (req, res) => {
-  res.redirect('/add')
+app.post('/update/:bookid', (req, res) => {
+  res.redirect(308, '/form?task=update');
 })
 
 

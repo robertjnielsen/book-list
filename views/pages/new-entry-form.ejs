@@ -11,7 +11,7 @@
 <body>
   <div id="formContainer">
     <img src="<%=book.image_url %>">
-    <form id="addBookForm" action="/add" method="POST">
+    <form id="addBookForm" action="/add<%=update%>" method="POST">
       <input type="text" name="title" value="<%= book.title%>" />
       <input name="author" value="<%= book.author %>">
       <textarea name="fulldescription"><%=book.fulldescription%></textarea>
@@ -19,6 +19,7 @@
       <input class="hidden" name="isbn" value="<%= book.isbn %>" style="display: none;">
       <input name="bookshelf" required placeholder="Name a Bookshelf">
       <input class="hidden" name="description" value="<%= book.description %>" style="display: none;">
+      <input class="hidden" name="id" value="<%= book.id %>" style="display: none;">
       <button>Save</button>
     </form>
 
