@@ -34,6 +34,11 @@ app.use(methodOverride('_method'));
 
 
 
+
+
+
+
+
 //FUNCTIONS______________________
 const Book = function (data) {
   this.books = data.map(book => {
@@ -51,6 +56,17 @@ const Book = function (data) {
 const queryDelete = (param, value) => {
   let SQL = `DELETE FROM books WHERE ${param} = $1;`;
   let values = [value];
+  return client.query(SQL, values)
+    .then(results => {
+      return results.rows;
+    })
+    .catch(err => {
+      return err
+    })
+}
+const queryUpdate = (id, book) => {
+  let SQL = 'UPDATE books SET author=$1, title=$2, isbn=$3, image_url=$4, description=$5, fulldescription=$6, bookshelf=$7 where id = $8;'
+  let values = [book.author, book.title, book.isbn, book.image_url, book.description, book.fulldescription, book.bookshelf, id]
   return client.query(SQL, values)
     .then(results => {
       return results.rows;
@@ -90,6 +106,17 @@ const insertBook = (book) => {
     })
 }
 
+
+
+
+
+
+
+
+
+//GLOBALS _________________________________________________
+
+
 //HANDLER FUNCTIONS_________________________________________________
 
 const renderIndex = (req, res) => {
@@ -122,17 +149,28 @@ const newSearch = (req, res) => {
 
 
 const submitForm = (req, res) => {
-  queryShelfOne('isbn', req.body.isbn)
-    .then(results => {
-      if (results.length === 0) {
-        return insertBook(req.body)
-      }
-    })
-    .then(results => {
-      console.log(results);
-      res.redirect('/');
-    })
-    .catch(err => console.log(err, 'insert book errror'))
+  if (req.query.task === 'update') {
+    queryUpdate(req.body.id, req.body)
+      .then(results => {
+        res.redirect('/');
+      })
+      .catch(err => {
+        console.log('failed the update', err);
+      })
+
+  } else {
+    queryShelfOne('isbn', req.body.isbn)
+      .then(results => {
+        if (results.length === 0) {
+          return insertBook(req.body)
+        }
+      })
+      .then(results => {
+        console.log(results);
+        res.redirect('/');
+      })
+      .catch(err => console.log(err, 'insert book errror'))
+  }
 }
 
 const renderDetails = (req, res) => {
@@ -152,6 +190,18 @@ const deleteBook = (req, res) => {
   res.redirect('/');
 }
 
+const updateBook = (req, res) => {
+  queryUpdate(req.params.bookid, req.body)
+    .then(results => {
+      console.log(results, 'success! Entry updated.');
+    })
+    .catch(err => console.log(err, 'error updating entry in DB.'))
+  res.redirect('/');
+}
+
+
+
+
 
 
 
@@ -166,9 +216,13 @@ app.post('/search/new', newSearch);
 
 
 //fires when user clicks 'add' from results page.
-app.get('/add', (req, res) => {
-  const responseBook = req.query;
-  res.render('pages/new-entry-form', { book: responseBook })
+app.post('/form', (req, res) => {
+  const responseBook = req.body;
+  let query = ''
+  if (req.query.task === 'update') {
+    query = '?task=update';
+  }
+  res.render('pages/new-entry-form', { book: responseBook, update: query });
 })
 
 //fires when add form is submitted
@@ -176,15 +230,21 @@ app.post('/add', submitForm);
 
 
 //fires when user clicks on a detail button in their library
-app.get('/detail/:bookid', renderDetails)
+app.get('/detail/:bookid', renderDetails);
 
 
 //fires when user presses delete button
 
-app.delete('/detail/:bookid', deleteBook)
+app.delete('/detail/:bookid', deleteBook);
+
+app.put('/detail/:bookid', updateBook);
+
+app.post('/update/:bookid', (req, res) => {
+  res.redirect(308, '/form?task=update');
+})
 
 
 app.get('*', (req, res) => {
   res.status(404).send('Sorry, the page you requested does not exist! :(');
-})
+});
 

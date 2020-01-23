@@ -31,6 +31,9 @@ Usability improvements to UI. Add header / footer partials using EJS.
 ### Add your personal bookshelf!
 Built out simple one-table DB to store books. Retreives proof of life book from DB.
 
+### Manage your bookshelf better
+Now you can remove books from your shelf to stay de-cluttered and happy!
+
 ## Credits & Collaborations
 
 Robert Nielsen and Tyler Sayvetz
@@ -125,6 +128,43 @@ Finish time: _1240__
 Actual time needed to complete: .____
 
 #########
+
+Number and name of feature: __insert that book into the DB.__
+
+Estimate of time needed to complete: __40 min___
+
+Start time: __1240__
+
+Finish time: _1320___
+
+Actual time needed to complete: _____
+
+
+_____________LAB 13_____________________________-
+
+Number and name of feature: __finish insert, resolve duplicate conflicts, debug__
+
+Estimate of time needed to complete: __1 hours___
+
+Start time: __910__
+
+Finish time: _1130___
+
+Actual time needed to complete: __2.5___
+
+
+
+Number and name of feature: __create delete functionality__
+
+Estimate of time needed to complete: __20 min___
+
+Start time: __1130__
+
+Finish time: _1200___
+
+Actual time needed to complete: _30 min
+
+
 
 Number and name of feature: __insert that book into the DB.__
 
