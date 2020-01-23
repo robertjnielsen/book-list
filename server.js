@@ -44,21 +44,24 @@ const Book = function (data) {
 }
 
 const queryShelf = () => {
-  return new Promise((resolve, reject) => {
-    let SQL = 'SELECT * FROM books;';
-    client.query(SQL)
-      .then((results) => {
-        resolve(results.rows);
-      })
-      .catch(err => console.log(err))
-  })
+  let SQL = 'SELECT * FROM books;';
+  return client.query(SQL)
+    .then((results) => {
+      return results.rows;
+    })
+    .catch(err => console.log(err))
+}
+
+const insertBook = (book) => {
+  let SQL = 'INSERT INTO books (author, title, isbn, image_url, description, bookshelf) VALUES ($1, $2, $3, $4, $5, $6);';
+  
 }
 
 //ROUTES________________________
 app.get('/', (req, res) => {
   queryShelf()
     .then((results) => {
-      res.render('pages/index', {shelf: results, count: results.length});
+      res.render('pages/index', { shelf: results, count: results.length });
       //retreive array of books form DB and render index. 
     })
     .catch(err => console.error(err, 'DB query busted..'))
@@ -72,8 +75,7 @@ app.post('/search/new', (req, res) => {
   let searchType = req.body.type === 'author' ? 'inauthor:' : 'intitle:';
   let APIUrl = 'https://www.googleapis.com/books/v1/volumes?q=' + searchType + req.body.searchQuery;
 
-  superagent
-    .get(APIUrl)
+  superagent.get(APIUrl)
     .then(results => {
       let titles = results.body.items.map(item => item.volumeInfo);
       const responseObj = new Book(titles);
@@ -87,11 +89,16 @@ app.post('/search/new', (req, res) => {
 
 
 app.get('/add', (req, res) => {
-  //this route will take you to the form page.
+  const responseBook = {
+    title: 'Tylers test book!',
+    description: 'wuite a lit of text for the text box. Theis i the description of the book! '
+  }
+  res.render('pages/new-entry-form', {book: responseBook})
 })
 
 app.post('/add', (req, res) => {
   //this route will add the book to the db and send the user to the index..
+  //this routeeeeee
 })
 
 app.get('*', (req, res) => {
