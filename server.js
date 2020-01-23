@@ -4,6 +4,7 @@ require('dotenv').config();
 const express = require('express');
 const superagent = require('superagent');
 const pg = require('pg');
+const methodOverride = require('method-override');
 require('ejs');
 
 
@@ -11,10 +12,11 @@ require('ejs');
 const client = new pg.Client(process.env.DATABASE_URL);
 client.on('error', (err) => { console.error(err) });
 
-
-
 const app = express();
 const PORT = process.env.PORT || 8081;
+
+//method override init
+app.use(methodOverride('_method'));
 
 client.connect()
   .then(() => {
@@ -38,13 +40,27 @@ const Book = function (data) {
       title: book.title || 'Title Unavailable',
       author: book.authors ? book.authors.join(', ') : 'No Author',
       description: book.description ? book.description.slice(0, 252) + '...' : 'Really great read...',
-      image: (book.imageLinks && book.imageLinks.thumbnail) ? book.imageLinks.thumbnail.replace('http:', 'https:') : 'https://i.imgur.com/J5LVHEL.jpg'
+      fulldescription: book.description || 'Really great read! We\'re serious!',
+      image_url: (book.imageLinks && book.imageLinks.thumbnail) ? book.imageLinks.thumbnail.replace('http:', 'https:') : 'https://i.imgur.com/J5LVHEL.jpg',
+      isbn: book.industryIdentifiers[0].identifier || null
     }
   });
 }
 
+const queryDelete = (param, value) => {
+  let SQL = `DELETE * FROM books WHERE ${param} = $1;`;
+  let values = [value];
+  return client.query(SQL, values)
+    .then(results => {
+      return results.rows;
+    })
+    .catch(err => {
+      return err
+    })
+}
+
 const queryShelf = () => {
-  let SQL = 'SELECT * FROM books;';
+  let SQL = 'SELECT * FROM books ORDER BY id desc;';
   return client.query(SQL)
     .then((results) => {
       return results.rows;
@@ -52,17 +68,29 @@ const queryShelf = () => {
     .catch(err => console.log(err))
 }
 
-let currentBookResults = [];
+const queryShelfOne = (param, value) => {
+  let SQL = `SELECT * FROM books where ${param} = $1;`;
+  let values = [value];
+  return client.query(SQL, values)
+    .then(results => {
+      return results.rows;
+    })
+    .catch(err => console.log(err, 'error selecting a book.'))
+}
 
 const insertBook = (book) => {
-  let SQL = 'INSERT INTO books (author, title, isbn, image_url, description, bookshelf) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id;';
-  let values = [book.author, book.title, book.isbn, book.image, book.description, book.bookshelf];
-  return client.query(SQL, values)
+  // let SQL = 'INSERT INTO books (author, title, isbn, image_url, description, bookshelf) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id;';
+  let SQL2 = 'INSERT INTO books (author, title, isbn, image_url, description, fulldescription, bookshelf) SELECT $1, $2, $3, $4, $5, $6, $7 WHERE NOT EXISTS (SELECT isbn FROM books WHERE isbn = $8) RETURNING id;';
+  let values = [book.author, book.title, book.isbn, book.image_url, book.description, book.fulldescription, book.bookshelf, book.isbn];
+  return client.query(SQL2, values)
     .then(results => {
       console.log('the id# is: ', results.rows[0]);
       return results.rows[0];
     })
 }
+
+
+
 
 //ROUTES________________________
 app.get('/', (req, res) => {
@@ -84,32 +112,59 @@ app.post('/search/new', (req, res) => {
 
   superagent.get(APIUrl)
     .then(results => {
+      console.dir(results.body.items);
       let titles = results.body.items.map(item => item.volumeInfo);
       const responseObj = new Book(titles);
-      currentBookResults = responseObj.books;
-      res.status(300).render('pages/searches/show', { books: responseObj.books });
+      console.log(responseObj);
+      res.status(200).render('pages/searches/show', { books: responseObj.books });
     })
     .catch(error => {
-      res.render('error', { error: error });
+      res.render('pages/error', { error: error });
     })
 })
 
-
+//fires when user clicks 'add' from results page.
 app.get('/add', (req, res) => {
   const responseBook = req.query;
   res.render('pages/new-entry-form', { book: responseBook })
 })
 
+//fires when add form is submitted
 app.post('/add', (req, res) => {
-  console.log(req.body);
-  insertBook(req.body)
+  queryShelfOne('isbn', req.body.isbn)
+    .then(results => {
+      if (results.length === 0) {
+        return insertBook(req.body)
+      }
+    })
     .then(results => {
       console.log(results);
-      //Have book ID out to this point, now what?? 
-      
+      res.redirect('/');
+    })
+    .catch(err => console.log(err, 'insert book errror'))
+})
+
+
+//fires when user clicks on a detail button in their library
+app.get('/detail/:bookid', (req, res) => {
+  queryShelfOne('id', req.params.bookid)
+    .then(results => {
+      res.render('pages/detail', { book: results[0] });
     })
 })
 
+
+//fires when user presses delete button
+
+app.post('/detail/:bookid', (req, res) => {
+  queryDelete('id', req.params.bookid) 
+    .then(results => {
+      console.log(results)
+    })
+    .catch(err => console.log(err, 'error deleting entry'))
+
+  res.redirect('/');
+})
 app.get('*', (req, res) => {
   res.status(404).send('Sorry, the page you requested does not exist! :(');
 })
