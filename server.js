@@ -52,9 +52,16 @@ const queryShelf = () => {
     .catch(err => console.log(err))
 }
 
+let currentBookResults = [];
+
 const insertBook = (book) => {
-  let SQL = 'INSERT INTO books (author, title, isbn, image_url, description, bookshelf) VALUES ($1, $2, $3, $4, $5, $6);';
-  
+  let SQL = 'INSERT INTO books (author, title, isbn, image_url, description, bookshelf) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id;';
+  let values = [book.author, book.title, book.isbn, book.image, book.description, book.bookshelf];
+  return client.query(SQL, values)
+    .then(results => {
+      console.log('the id# is: ', results.rows[0]);
+      return results.rows[0];
+    })
 }
 
 //ROUTES________________________
@@ -79,7 +86,7 @@ app.post('/search/new', (req, res) => {
     .then(results => {
       let titles = results.body.items.map(item => item.volumeInfo);
       const responseObj = new Book(titles);
-      console.log(responseObj.books);
+      currentBookResults = responseObj.books;
       res.status(300).render('pages/searches/show', { books: responseObj.books });
     })
     .catch(error => {
@@ -89,16 +96,18 @@ app.post('/search/new', (req, res) => {
 
 
 app.get('/add', (req, res) => {
-  const responseBook = {
-    title: 'Tylers test book!',
-    description: 'wuite a lit of text for the text box. Theis i the description of the book! '
-  }
-  res.render('pages/new-entry-form', {book: responseBook})
+  const responseBook = req.query;
+  res.render('pages/new-entry-form', { book: responseBook })
 })
 
 app.post('/add', (req, res) => {
-  //this route will add the book to the db and send the user to the index..
-  //this routeeeeee
+  console.log(req.body);
+  insertBook(req.body)
+    .then(results => {
+      console.log(results);
+      //Have book ID out to this point, now what?? 
+      
+    })
 })
 
 app.get('*', (req, res) => {
