@@ -59,6 +59,17 @@ const queryDelete = (param, value) => {
       return err
     })
 }
+const queryUpdate = (id, book) => {
+  let SQL = 'UPDATE books SET author=$1, title=$2, isbn=$3, image_url=$4, description=$5, fulldescription=$6, bookshelf=$7 where id = $8;'
+  let values = [book.author, book.title, book.isbn, book.image_url, book.description, book.fulldescription, book.bookshelf, id]
+  return client.query(SQL, values)
+    .then(results => {
+      return results.rows;
+    })
+    .catch(err => {
+      return err
+    })
+}
 
 const queryShelf = () => {
   let SQL = 'SELECT * FROM books ORDER BY id desc;';
@@ -89,6 +100,8 @@ const insertBook = (book) => {
       return results.rows[0];
     })
 }
+//GLOBALS _________________________________________________
+
 
 //HANDLER FUNCTIONS_________________________________________________
 
@@ -152,6 +165,15 @@ const deleteBook = (req, res) => {
   res.redirect('/');
 }
 
+const updateBook = (req, res) => {
+  queryUpdate(req.params.bookid, req.body)
+    .then(results => {
+      console.log(results, 'success! Entry updated.');
+    })
+    .catch(err => console.log(err, 'error updating entry in DB.'))
+  res.redirect('/');
+}
+
 
 
 
@@ -168,7 +190,7 @@ app.post('/search/new', newSearch);
 //fires when user clicks 'add' from results page.
 app.get('/add', (req, res) => {
   const responseBook = req.query;
-  res.render('pages/new-entry-form', { book: responseBook })
+  res.render('pages/new-entry-form', { book: responseBook });
 })
 
 //fires when add form is submitted
@@ -176,15 +198,21 @@ app.post('/add', submitForm);
 
 
 //fires when user clicks on a detail button in their library
-app.get('/detail/:bookid', renderDetails)
+app.get('/detail/:bookid', renderDetails);
 
 
 //fires when user presses delete button
 
-app.delete('/detail/:bookid', deleteBook)
+app.delete('/detail/:bookid', deleteBook);
+
+app.put('/detail/:bookid', updateBook);
+
+app.get('/update', (req, res) => {
+  res.redirect('/add')
+})
 
 
 app.get('*', (req, res) => {
   res.status(404).send('Sorry, the page you requested does not exist! :(');
-})
+});
 
