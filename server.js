@@ -1,5 +1,5 @@
 'use strict';
-
+//SERVER SETUP___________________________
 require('dotenv').config();
 const express = require('express');
 const superagent = require('superagent');
@@ -7,16 +7,12 @@ const pg = require('pg');
 const methodOverride = require('method-override');
 require('ejs');
 
-
 //configure db
 const client = new pg.Client(process.env.DATABASE_URL);
 client.on('error', (err) => { console.error(err) });
 
 const app = express();
 const PORT = process.env.PORT || 8081;
-
-//method override init
-app.use(methodOverride('_method'));
 
 client.connect()
   .then(() => {
@@ -32,6 +28,11 @@ app.set('view engine', 'ejs');
 //import body parser
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('./public'));
+//method override init
+app.use(methodOverride('_method'));
+
+
+
 
 //FUNCTIONS______________________
 const Book = function (data) {
@@ -89,24 +90,20 @@ const insertBook = (book) => {
     })
 }
 
+//HANDLER FUNCTIONS_________________________________________________
 
-
-
-//ROUTES________________________
-app.get('/', (req, res) => {
+const renderIndex = (req, res) => {
   queryShelf()
     .then((results) => {
       res.render('pages/index', { shelf: results, count: results.length });
       //retreive array of books form DB and render index. 
     })
     .catch(err => console.error(err, 'DB query busted..'))
-});
+}
 
-app.get('/search/new', (req, res) => {
-  res.render('pages/search');
-});
 
-app.post('/search/new', (req, res) => {
+const newSearch = (req, res) => {
+
   let searchType = req.body.type === 'author' ? 'inauthor:' : 'intitle:';
   let APIUrl = 'https://www.googleapis.com/books/v1/volumes?q=' + searchType + req.body.searchQuery;
 
@@ -121,16 +118,10 @@ app.post('/search/new', (req, res) => {
     .catch(error => {
       res.render('pages/error', { error: error });
     })
-})
+}
 
-//fires when user clicks 'add' from results page.
-app.get('/add', (req, res) => {
-  const responseBook = req.query;
-  res.render('pages/new-entry-form', { book: responseBook })
-})
 
-//fires when add form is submitted
-app.post('/add', (req, res) => {
+const submitForm = (req, res) => {
   queryShelfOne('isbn', req.body.isbn)
     .then(results => {
       if (results.length === 0) {
@@ -142,29 +133,58 @@ app.post('/add', (req, res) => {
       res.redirect('/');
     })
     .catch(err => console.log(err, 'insert book errror'))
-})
+}
 
-
-//fires when user clicks on a detail button in their library
-app.get('/detail/:bookid', (req, res) => {
+const renderDetails = (req, res) => {
   queryShelfOne('id', req.params.bookid)
     .then(results => {
       res.render('pages/detail', { book: results[0] });
     })
-})
+}
 
-
-//fires when user presses delete button
-
-app.delete('/detail/:bookid', (req, res) => {
-  queryDelete('id', req.params.bookid) 
+const deleteBook = (req, res) => {
+  queryDelete('id', req.params.bookid)
     .then(results => {
       console.log(results)
     })
     .catch(err => console.log(err, 'error deleting entry'))
 
   res.redirect('/');
+}
+
+
+
+
+//ROUTES________________________
+app.get('/', renderIndex);
+
+app.get('/search/new', (req, res) => {
+  res.render('pages/search');
+});
+
+app.post('/search/new', newSearch);
+
+
+//fires when user clicks 'add' from results page.
+app.get('/add', (req, res) => {
+  const responseBook = req.query;
+  res.render('pages/new-entry-form', { book: responseBook })
 })
+
+//fires when add form is submitted
+app.post('/add', submitForm);
+
+
+//fires when user clicks on a detail button in their library
+app.get('/detail/:bookid', renderDetails)
+
+
+//fires when user presses delete button
+
+app.delete('/detail/:bookid', deleteBook)
+
+
 app.get('*', (req, res) => {
   res.status(404).send('Sorry, the page you requested does not exist! :(');
 })
+
